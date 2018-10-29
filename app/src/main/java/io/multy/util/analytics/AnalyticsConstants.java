@@ -265,4 +265,14 @@ public class AnalyticsConstants {
     public static final String KF_PERMISSIONS_GRANTED = "KF_Permissions_Granted";
     public static final String KF_WALLET_COUNT = "KF_Wallets_Count";
     public static final String KF_RECEIVED_TRANSACTION = "KF_Transaction_Received";
+
+    public static final String DRAGONS_BANNER_CLICK = "Dragon_Banner_Clicked";
+    public static final String WEB3_SCREEN = "Screen_Browser";
+    public static final String BROWSER_OPEN = "loading URL ";
+    public static final String BROWSER_URL = "URL";
+    public static final String CURRENCY_ID = "Blockchain";
+    public static final String NETWORK_ID = "NetType";
+    public static final String AMOUNT = "Amount";
+    public static final String GAS_LIMIT = "GasPrice";
+    public static final String GAS_PRICE = "GasLimit";
 }

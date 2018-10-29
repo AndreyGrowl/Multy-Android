@@ -390,4 +390,7 @@
     <string name="about_imported">Please note that imported wallets can\'t be restored from seed phrase on other device. You should backup your private key in order to secure your funds, so you can import it later on other device.</string>
     <string name="enter_sum_too_much">You trying to enter sum more then you have</string>
     <string name="browser">Browser</string>
+    <string name="you_going_spend">You are going to spend %s ETH (and %s ETH in fees) from wallet "%s"</string>
+    <string name="confirm">Confirm</string>
+    <string name="deny">Deny</string>
 </resources>

@@ -17,13 +17,13 @@ import android.widget.TextView;
 
 import org.greenrobot.eventbus.EventBus;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import io.multy.Multy;
 import io.multy.R;
 import io.multy.model.entities.OpenDragonsEvent;
 import io.multy.ui.fragments.dialogs.DonateDialog;
 import io.multy.util.Constants;
+import io.multy.util.analytics.Analytics;
+import io.multy.util.analytics.AnalyticsConstants;
 
 /**
  * Created by appscrunch on 16.11.17.
@@ -87,6 +87,7 @@ public class PortfoliosAdapter extends PagerAdapter {
             v.setEnabled(false);
             v.postDelayed(() -> v.setEnabled(true), 500);
             if (position == 0) {
+                Analytics.getInstance(v.getContext()).logEvent(AnalyticsConstants.MAIN_SCREEN, AnalyticsConstants.DRAGONS_BANNER_CLICK, null);
                 EventBus.getDefault().post(new OpenDragonsEvent());
             } else {
                 DonateDialog.getInstance((Integer) v.getTag()).show(fragmentManager, DonateDialog.TAG);

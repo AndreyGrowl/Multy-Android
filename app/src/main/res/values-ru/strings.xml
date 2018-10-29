@@ -316,4 +316,7 @@
     <string name="about_imported">Обратите внимание, что импортированные кошельки нельзя восстановить из seed фразы на другом устройстве. Вы должны сделать резервную копию своего личного ключа, чтобы защитить свои средства, поэтому вы можете импортировать его позже на другое устройство.</string>
     <string name="enter_sum_too_much">Вы пытаетесь ввести сумму больше, чем у вас есть на счету</string>
     <string name="browser">Браузер</string>
+    <string name="you_going_spend">Вы потратите %s ETH (и %s ETH комиссии) из кошелька "%s"</string>
+    <string name="confirm">Подтвердить</string>
+    <string name="deny">Отменить</string>
 </resources>

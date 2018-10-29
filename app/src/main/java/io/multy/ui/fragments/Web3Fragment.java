@@ -47,6 +47,8 @@ import io.multy.ui.fragments.send.SendSummaryFragment;
 import io.multy.util.Constants;
 import io.multy.util.CryptoFormatUtils;
 import io.multy.util.NativeDataHelper;
+import io.multy.util.analytics.Analytics;
+import io.multy.util.analytics.AnalyticsConstants;
 import io.multy.viewmodels.WalletViewModel;
 import io.realm.RealmResults;
 import okhttp3.ResponseBody;
@@ -99,6 +101,12 @@ public class Web3Fragment extends BaseFragment {
         }, 3000));
 
         return convertView;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Analytics.getInstance(requireContext()).logEvent(AnalyticsConstants.WEB3_SCREEN, AnalyticsConstants.BROWSER_OPEN + dappUrl, dappUrl);
     }
 
     @Override
@@ -292,7 +300,7 @@ public class Web3Fragment extends BaseFragment {
     }
 
     private void initState() {
-        webView.setRpcUrl("https://rinkeby.infura.io/v3/78ae782ed28e48c0b3f74ca69c4f7ca8");
+//        webView.setRpcUrl("https://rinkeby.infura.io/v3/78ae782ed28e48c0b3f74ca69c4f7ca8");
         webView.requestFocus();
         webView.setOnSignMessageListener(message -> {
             Timber.d("onSignMessage:" + message.value);
@@ -324,15 +332,18 @@ public class Web3Fragment extends BaseFragment {
                 final String finalPriceAmount = priceAmount;
 
                 AlertDialog alertDialog = new AlertDialog.Builder(getActivity()).create();
-                alertDialog.setMessage("You are going to spend " + CryptoFormatUtils.weiToEthLabel(finalPriceAmount) +
-                        " (and " + ethPrice + " in fees) from wallet " + viewModel.getWalletLive().getValue().getWalletName());
-                alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Confirm", (dialog, which) -> {
+                String message = String.format(getString(R.string.you_going_spend), CryptoFormatUtils.weiToEthLabel(finalPriceAmount),
+                        ethPrice, viewModel.getWalletLive().getValue().getWalletName());
+                alertDialog.setMessage(message);
+                alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.confirmation), (dialog, which) -> {
                     try {
                         Wallet wallet = viewModel.getWalletLive().getValue();
                         byte[] seed = RealmManager.getSettingsDao().getSeed().getSeed();
+                        final int currencyId = wallet.getCurrencyId();
+                        final int networkId = wallet.getNetworkId();
                         final byte[] tx = NativeDataHelper.makeTransactionEthPayload(seed, wallet.getIndex(), wallet.getActiveAddress().getIndex(),
-                                wallet.getCurrencyId(), wallet.getNetworkId(), wallet.getBalance(), finalPriceAmount,
-                                transaction.recipient.toString(), String.valueOf(transaction.gasLimit), transaction.gasPrice.toString(), wallet.getEthWallet().getNonce(), transaction.payload.replace("0x", ""));
+                                currencyId, networkId, wallet.getBalance(), finalPriceAmount, transaction.recipient.toString(), String.valueOf(transaction.gasLimit),
+                                transaction.gasPrice.toString(), wallet.getEthWallet().getNonce(), transaction.payload.replace("0x", ""));
                         Timber.i("start converting to hex");
                         final String hex = "0x" + SendSummaryFragment.byteArrayToHex(tx);
                         Timber.i("hex converted " + hex);
@@ -350,6 +361,10 @@ public class Web3Fragment extends BaseFragment {
                             public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
                                 if (response.isSuccessful()) {
                                     Timber.i("BUYING SUCCESS");
+                                    if (getContext() != null) {
+                                        Analytics.getInstance(getContext()).logBrowserSendTx(dappUrl, currencyId, networkId, finalPriceAmount,
+                                                String.valueOf(transaction.gasLimit), transaction.gasPrice.toString());
+                                    }
                                 } else {
                                     Timber.i("BUYING FAIL");
                                     webView.onSignError(transaction, response.message());
@@ -369,7 +384,7 @@ public class Web3Fragment extends BaseFragment {
                         webView.onSignError(transaction, e.getMessage());
                     }
                 });
-                alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Deny", new DialogInterface.OnClickListener() {
+                alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, getString(R.string.deny), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         webView.onSignError(transaction, "Canceled");
@@ -391,7 +406,7 @@ public class Web3Fragment extends BaseFragment {
         Wallet wallet = viewModel.getWallet(walletId);
         fillWalletInfo(wallet);
         webView.setWalletAddress(new Address(wallet.getActiveAddress().getAddress()));
-        webView.setRpcUrl(wallet.getNetworkId() == NativeDataHelper.NetworkId.TEST_NET.getValue() ?
+        webView.setRpcUrl(wallet.getNetworkId() == NativeDataHelper.NetworkId.RINKEBY.getValue() ?
                 "https://rinkeby.infura.io/v3/78ae782ed28e48c0b3f74ca69c4f7ca8" : "https://mainnet.infura.io/v3/78ae782ed28e48c0b3f74ca69c4f7ca8");
         webView.setChainId(wallet.getNetworkId());
     }

@@ -393,6 +393,17 @@ public class Analytics {
         logEvent(AnalyticsConstants.CONTACT_EVENT, AnalyticsConstants.CONTACT_PHONEBOOK_OPENED, null);
     }
 
+    public void logBrowserSendTx(String url, int currencyId, int networkId, String amount, String gasLimit, String gasPrice) {
+        Bundle bundle = new Bundle();
+        bundle.putString(AnalyticsConstants.BROWSER_URL, url);
+        bundle.putInt(AnalyticsConstants.CURRENCY_ID, currencyId);
+        bundle.putInt(AnalyticsConstants.NETWORK_ID, networkId);
+        bundle.putString(AnalyticsConstants.AMOUNT, amount);
+        bundle.putString(AnalyticsConstants.GAS_LIMIT, gasPrice);
+        bundle.putString(AnalyticsConstants.GAS_PRICE, gasLimit);
+        analytics.logEvent(AnalyticsConstants.WEB3_SCREEN, bundle);
+    }
+
     public void logEvent(String event, String argumentName, String argument) {
         Bundle bundle = new Bundle();
         bundle.putString(argumentName, argument);

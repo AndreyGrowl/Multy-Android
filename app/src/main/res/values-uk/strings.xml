@@ -316,4 +316,7 @@
     <string name="imported_wallet">Імпортований гаманець</string>
     <string name="about_imported">Зверніть увагу, що імпортовані гаманці не можна відновити з seed фрази на іншому пристрої. Ви повинні зробити резервну копію свого особистого ключа, щоб захистити свої кошти, тому ви можете імпортувати його пізніше на інший пристрій.</string>
     <string name="enter_sum_too_much">Ви намагаєтеся ввести суму більшу, ніж у вас є на рахунку</string>
+    <string name="you_going_spend">Ви витратите %s ETH (і %s ETH комісії) з гаманця "%s"</string>
+    <string name="confirm">Затверджувати</string>
+    <string name="deny">Відкидати</string>
 </resources>
